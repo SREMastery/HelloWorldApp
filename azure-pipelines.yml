@@ -7,7 +7,7 @@ trigger:
 - master
 
 pool: 
-  name: 'winagent'
+  name: 'linuxagent'
 
 steps:
   - task: DotNetCoreCLI@2
