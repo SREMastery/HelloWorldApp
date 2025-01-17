@@ -6,7 +6,8 @@
 trigger:
 - master
 
-pool: 'winagent'
+pool: 
+  name: 'winagent'
 
 variables:
   solution: '**/*.sln'
