@@ -22,7 +22,6 @@ steps:
   inputs:
     command: 'publish'
     publishWebProjects: true
-    arguments: '--no-build --configuration Release --output $(Build.ArtifactStagingDirectory)/Release'
 
 - task: PublishPipelineArtifact@1
   inputs:
