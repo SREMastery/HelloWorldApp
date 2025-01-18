@@ -17,7 +17,6 @@ steps:
   inputs:
     command: 'build'
     projects: '**/*.csproj'
-    arguments: '--no-build --configuration Release'
 
 - task: DotNetCoreCLI@2
   inputs:
