@@ -2,7 +2,7 @@ trigger:
 - master
 
 pool: 
-  name: 'winagent'
+  name: 'Azure Pipelines'
 
 variables:
   buildConfiguration: 'Release'
