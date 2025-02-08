@@ -45,10 +45,48 @@ stages:
         projects: '**/*.csproj'
         arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 
-    # Upload build artifacts
-    - task: PublishBuildArtifacts@1
-      displayName: 'Publish Build Artifacts'
+    - task: PublishPipelineArtifact@1
       inputs:
-        pathToPublish: $(Build.ArtifactStagingDirectory)
-        artifactName: 'drop'
-        publishLocation: 'Container'
+        targetPath: '$(Build.ArtifactStagingDirectory)'
+        artifact: 'Drop'
+        publishLocation: 'pipeline'
+
+- stage: DeploytoDev
+  displayName: Deploy to Dev
+  dependsOn: Build
+  jobs:
+  - job: Deploy
+    displayName: Download Job
+    steps:
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'current'
+        artifactName: 'Drop'
+        targetPath: '$(Pipeline.Workspace)'
+    - task: AzureRmWebAppDeployment@4
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: 'Azconnection_through_MI'
+        appType: 'webApp'
+        WebAppName: 'my-app-qa'
+        packageForLinux: '$(Pipeline.Workspace)/**/*.zip'
+
+- stage: DeploytoQA
+  displayName: Deploy to QA
+  dependsOn: DeploytoDev
+  jobs:
+  - job: Deploy
+    displayName: Download Job
+    steps:
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'current'
+        artifactName: 'Drop'
+        targetPath: '$(Pipeline.Workspace)'
+    - task: AzureRmWebAppDeployment@4
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: 'Azconnection_through_MI'
+        appType: 'webApp'
+        WebAppName: 'my-app-testing'
+        packageForLinux: '$(Pipeline.Workspace)/**/*.zip'
